@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Blockchain-Based Voting System
 
 A secure, transparent, and immutable voting system built with Python, Flask, and MySQL. It simulates a blockchain ledger within a relational database to ensure the integrity of election results.
@@ -59,3 +60,6 @@ The `init_db.py` script automatically creates the following test accounts:
 - `templates/`: HTML files for the frontend.
 - `static/`: CSS and JS assets.
 - `architecture/`: Contains system flowcharts and ER diagrams.
+=======
+# EDP-Project
+>>>>>>> 1ba6b5a7564bb44e7710f16319dcae45cedff04e
