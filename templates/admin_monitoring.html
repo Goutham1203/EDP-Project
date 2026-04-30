@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Monitoring & Results - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="glass-card mb-2">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2>Monitoring & Results</h2>
+            <p>
+                System Status: 
+                {% if state.active %}
+                    <span style="color: #3fb950; font-weight: bold;">ACTIVE <i class="fa-solid fa-circle-nodes fa-fade"></i></span>
+                {% else %}
+                    <span style="color: #ff7b72; font-weight: bold;">INACTIVE</span>
+                {% endif %}
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+            <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">Blockchain Status</h3>
+            {% if valid %}
+                <div style="color: #3fb950; font-weight: bold;">
+                    <i class="fa-solid fa-shield-check"></i> Blockchain is Valid
+                </div>
+                <div style="font-size: 0.9em; color: #8b949e; margin-top: 0.3rem;">
+                    Message: {{ msg }}
+                </div>
+            {% else %}
+                <div style="color: #ff7b72; font-weight: bold;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Blockchain Compromised
+                </div>
+                <div style="font-size: 0.9em; color: #8b949e; margin-top: 0.3rem;">
+                    Message: {{ msg }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="glass-card">
+    <h3 class="mb-2 text-center">Live Tally</h3>
+    
+    {% if not valid %}
+        <div class="alert alert-error text-center">
+            Warning: The system has detected tampering. Results cannot be verified.
+        </div>
+    {% else %}
+        {% set max_votes = 0 %}
+        {% set total_votes = 0 %}
+        
+        {% for result in results %}
+            {% set total_votes = total_votes + result.vote_count %}
+            {% if result.vote_count > max_votes %}
+                {% set max_votes = result.vote_count %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if total_votes == 0 %}
+            <p class="text-center" style="color: #8b949e;">No votes have been cast yet.</p>
+        {% else %}
+            <div style="max-width: 600px; margin: 0 auto;">
+                {% for result in results %}
+                    {% set percentage = (result.vote_count / total_votes * 100) | round(1) %}
+                    <div class="result-item">
+                        <div class="result-header">
+                            <span>{{ result.name }}</span>
+                            <span>{{ result.vote_count }} votes ({{ percentage }}%)</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: {{ percentage }}%"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <p class="text-center mt-2" style="color: #8b949e; font-size: 0.9rem;">
+                Total Votes Cast: {{ total_votes }}
+            </p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Schedule Election - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="glass-card mb-2">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h2>Schedule Election</h2>
+            <p>
+                System Status: 
+                {% if state.active %}
+                    <span style="color: #3fb950; font-weight: bold;">ACTIVE <i class="fa-solid fa-circle-nodes fa-fade"></i></span>
+                {% else %}
+                    <span style="color: #ff7b72; font-weight: bold;">INACTIVE</span>
+                {% endif %}
+            </p>
+            {% if state.start_time and state.end_time %}
+                <p style="color: #8b949e; font-size: 0.9em; margin-top: 0.5rem;">
+                    Scheduled: {{ state.start_time }} to {{ state.end_time }}
+                </p>
+            {% endif %}
+        </div>
+        
+        <form method="POST" action="{{ url_for('schedule_election') }}" style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Set Schedule</h3>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="display: block; font-size: 0.8rem; margin-bottom: 0.3rem;">Start Time</label>
+                    <input type="datetime-local" name="start_time" required class="form-control" style="padding: 0.5rem;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.8rem; margin-bottom: 0.3rem;">End Time</label>
+                    <input type="datetime-local" name="end_time" required class="form-control" style="padding: 0.5rem;">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Set Schedule</button>
+        </form>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div class="glass-card">
+        <h3>Add Candidate</h3>
+        <form method="POST" action="{{ url_for('add_candidate') }}">
+            <div class="form-group">
+                <label for="name">Candidate Name</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="image_url">Image URL (Optional)</label>
+                <input type="url" id="image_url" name="image_url" class="form-control" placeholder="https://...">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Candidate</button>
+        </form>
+    </div>
+
+    <div class="glass-card">
+        <h3>Current Candidates</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for candidate in candidates %}
+                    <tr>
+                        <td>{{ candidate.id }}</td>
+                        <td>{{ candidate.name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

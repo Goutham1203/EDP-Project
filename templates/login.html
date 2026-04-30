@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - BlockVote{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 5vh auto;">
+    <div class="glass-card">
+        <h2 class="text-center">Welcome Back</h2>
+        <p class="text-center" style="color: #8b949e; margin-bottom: 2rem;">Sign in to your account</p>
+        
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">Login</button>
+        </form>
+        
+        <p class="text-center mt-2">
+            Don't have an account? <a href="{{ url_for('register') }}" style="color: var(--primary-color);">Register here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

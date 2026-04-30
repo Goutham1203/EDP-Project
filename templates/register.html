@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - BlockVote{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 5vh auto;">
+    <div class="glass-card">
+        <h2 class="text-center">Create an Account</h2>
+        <p class="text-center" style="color: #8b949e; margin-bottom: 2rem;">Join BlockVote to cast your secure vote</p>
+        
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" name="role" class="form-control" required style="background: rgba(13, 17, 23, 0.5); color: var(--text-color);">
+                    <option value="voter" style="background: var(--bg-color);">Voter</option>
+                    <option value="admin" style="background: var(--bg-color);">Admin</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-accent btn-block" style="margin-top: 1rem;">Register</button>
+        </form>
+        
+        <p class="text-center mt-2">
+            Already have an account? <a href="{{ url_for('login') }}" style="color: var(--primary-color);">Login here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

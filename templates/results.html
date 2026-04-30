@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Election Results - BlockVote{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 800px; margin: 0 auto;">
+    <h2 class="text-center mb-2">Real-time Election Results</h2>
+    
+    {% if not valid %}
+        <div class="alert alert-error text-center">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <h3>Warning: Blockchain Integrity Compromised</h3>
+            <p>The system has detected tampering with the voting ledger. Results cannot be verified.</p>
+        </div>
+    {% else %}
+        <div style="margin-bottom: 2rem; text-align: center;">
+            <span style="background: rgba(46, 160, 67, 0.2); color: #3fb950; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold; border: 1px solid var(--success-color);">
+                <i class="fa-solid fa-shield-check"></i> Blockchain Verified & Secure
+            </span>
+        </div>
+        
+        {% set max_votes = 0 %}
+        {% set total_votes = 0 %}
+        
+        {% for result in results %}
+            {% set total_votes = total_votes + result.vote_count %}
+            {% if result.vote_count > max_votes %}
+                {% set max_votes = result.vote_count %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if total_votes == 0 %}
+            <p class="text-center" style="color: #8b949e;">No votes have been cast yet.</p>
+        {% else %}
+            <div style="margin-top: 3rem;">
+                {% for result in results %}
+                    {% set percentage = (result.vote_count / total_votes * 100) | round(1) %}
+                    <div class="result-item">
+                        <div class="result-header">
+                            <span>{{ result.name }}</span>
+                            <span>{{ result.vote_count }} votes ({{ percentage }}%)</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: {{ percentage }}%"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <p class="text-center mt-2" style="color: #8b949e; font-size: 0.9rem;">
+                Total Votes Cast: {{ total_votes }}
+            </p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

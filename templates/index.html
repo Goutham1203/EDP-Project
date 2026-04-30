@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to BlockVote{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="text-align: center; margin-top: 5vh; padding: 4rem 2rem;">
+    <h1 style="font-size: 3.5rem; background: -webkit-linear-gradient(45deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Secure. Transparent. Immutable.</h1>
+    <p style="font-size: 1.2rem; color: #8b949e; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+        Experience the future of democracy with our Blockchain-based Voting System. Ensure your vote counts and cannot be tampered with.
+    </p>
+    
+    <div>
+        {% if session.get('user_id') %}
+            {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Go to Admin Panel</a>
+            {% else %}
+                <a href="{{ url_for('voter_dashboard') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Cast Your Vote</a>
+            {% endif %}
+        {% else %}
+            <a href="{{ url_for('register') }}" class="btn btn-accent" style="font-size: 1.1rem; padding: 1rem 2rem; margin-right: 1rem;">Get Started</a>
+            <a href="{{ url_for('login') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Login</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

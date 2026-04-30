@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Voter Dashboard - BlockVote{% endblock %}
+
+{% block content %}
+<div class="glass-card mb-2">
+    <h2>Welcome, {{ session.username }}</h2>
+    
+    {% if not state.active %}
+        <div class="alert alert-error mt-2">
+            <i class="fa-solid fa-triangle-exclamation"></i> The election is currently inactive. You cannot cast a vote at this time.
+            {% if state.start_time and state.end_time %}
+                <br><br><strong>Scheduled:</strong> {{ state.start_time }} to {{ state.end_time }}
+            {% endif %}
+        </div>
+    {% elif has_voted %}
+        <div class="alert alert-success mt-2">
+            <i class="fa-solid fa-circle-check"></i> You have successfully cast your vote. Thank you for participating!
+        </div>
+    {% else %}
+        <p style="color: #8b949e;">Please review the candidates below and cast your secure, immutable vote.</p>
+    {% endif %}
+</div>
+
+{% if state.active and not has_voted %}
+    <h3 class="mt-2">Official Candidates</h3>
+    <div class="candidate-grid">
+        {% for candidate in candidates %}
+            <div class="glass-card candidate-card">
+                <img src="{{ candidate.image_url }}" alt="{{ candidate.name }}" class="candidate-img">
+                <h3>{{ candidate.name }}</h3>
+                <p style="color: #8b949e; margin-bottom: 1.5rem; font-size: 0.9rem; height: 60px; overflow: hidden;">
+                    {{ candidate.description }}
+                </p>
+                
+                <form method="POST" action="{{ url_for('cast_vote') }}" onsubmit="return confirm('Are you sure you want to vote for {{ candidate.name }}? This action cannot be undone.');">
+                    <input type="hidden" name="candidate_id" value="{{ candidate.id }}">
+                    <button type="submit" class="btn btn-primary btn-block">Vote for {{ candidate.name }}</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock %}

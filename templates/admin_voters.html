@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Voters - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <!-- Add Voter Column -->
+    <div class="glass-card">
+        <h3>Add New Voter</h3>
+        <p style="color: #8b949e; font-size: 0.9em; margin-bottom: 1.5rem;">Provision a new voter account manually.</p>
+        <form method="POST" action="{{ url_for('admin_add_voter') }}">
+            <div class="form-group">
+                <label for="voter_username">Username</label>
+                <input type="text" id="voter_username" name="username" class="form-control" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="voter_password">Password</label>
+                <input type="password" id="voter_password" name="password" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" name="role" class="form-control" required style="background: rgba(13, 17, 23, 0.5); color: var(--text-color);">
+                    <option value="voter" style="background: var(--bg-color);">Voter</option>
+                    <option value="admin" style="background: var(--bg-color);">Admin</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-accent btn-block">Create User</button>
+        </form>
+    </div>
+
+    <!-- View / Edit Voters Column -->
+    <div class="glass-card">
+        <h3>Registered Voters</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Voted</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for voter in voters %}
+                    <tr>
+                        <td>{{ voter.id }}</td>
+                        <td>{{ voter.username }}</td>
+                        <td>
+                            {% if voter.has_voted %}
+                                <span style="color: #3fb950;"><i class="fa-solid fa-check"></i> Yes</span>
+                            {% else %}
+                                <span style="color: #ff7b72;"><i class="fa-solid fa-xmark"></i> No</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button onclick="openEditModal({{ voter.id }}, '{{ voter.username }}')" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Editing Voter -->
+<div id="editModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="glass-card" style="width: 100%; max-width: 400px; position: relative;">
+        <button onclick="closeEditModal()" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        <h3 id="modalTitle">Edit Voter</h3>
+        <p style="color: #8b949e; font-size: 0.9em; margin-bottom: 1.5rem;">Leave password blank to keep current password.</p>
+        
+        <form id="editForm" method="POST" action="">
+            <div class="form-group">
+                <label for="edit_username">Username</label>
+                <input type="text" id="edit_username" name="username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="edit_password">New Password</label>
+                <input type="password" id="edit_password" name="password" class="form-control" placeholder="••••••••">
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                <button type="button" class="btn btn-danger" style="flex: 1;" onclick="deleteVoter()">Delete Voter</button>
+            </div>
+        </form>
+        
+        <form id="deleteForm" method="POST" action="" style="display: none;"></form>
+    </div>
+</div>
+
+<script>
+    let currentEditVoterId = null;
+
+    function openEditModal(voterId, currentUsername) {
+        currentEditVoterId = voterId;
+        document.getElementById('editModal').style.display = 'flex';
+        document.getElementById('edit_username').value = currentUsername;
+        document.getElementById('edit_password').value = '';
+        
+        // Dynamically set the form actions
+        document.getElementById('editForm').action = '/admin/modify_voter/' + voterId;
+        document.getElementById('deleteForm').action = '/admin/delete_voter/' + voterId;
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+        currentEditVoterId = null;
+    }
+
+    function deleteVoter() {
+        if(confirm('Are you sure you want to delete this voter? This action cannot be undone.')) {
+            document.getElementById('deleteForm').submit();
+        }
+    }
+</script>
+{% endblock %}
